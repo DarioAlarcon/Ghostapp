@@ -59,7 +59,7 @@ class __formState extends State<_form> {
 
 final emailCtrl = TextEditingController();
 final passCtrl = TextEditingController();
-
+final namectrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -71,7 +71,7 @@ final passCtrl = TextEditingController();
         customInput(
           icon: Icons.person,
           placeholder: 'Name',
-          textController: emailCtrl,
+          textController: namectrl,
           keyboardType:  TextInputType.text,
          ),
          customInput(
@@ -93,6 +93,7 @@ final passCtrl = TextEditingController();
         yellowButton(
           titulo: 'Sing up',
           onPressed: (){
+            print(namectrl.text);
             print(emailCtrl.text);
             print(passCtrl.text);
           },

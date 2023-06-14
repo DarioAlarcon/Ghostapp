@@ -47,7 +47,6 @@ class _form extends StatefulWidget {
 }
 
 class __formState extends State<_form> {
-
 final emailCtrl = TextEditingController();
 final passCtrl = TextEditingController();
 
