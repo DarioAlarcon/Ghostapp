@@ -21,23 +21,37 @@ class _UserScreenState extends State<UserScreen> {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: Text('Message', style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w700),),
-        elevation: 1,
+        toolbarHeight: 70,
+        title: Text('Messages', style: TextStyle(color: Colors.black, fontWeight: FontWeight.w700),),
+        elevation: 0.5,
         backgroundColor: Colors.white,
-        leading: IconButton(onPressed: (){}, icon: Icon(Icons.exit_to_app, color: Colors.black54,),),
         actions: [
           Container(
             margin: EdgeInsets.only(right: 20),
-            /*child: Icon(
-              Icons.wifi, color: Color.fromARGB(255, 109, 220, 112),
-            ),*/
-            child: Icon(
-              Icons.wifi_off, color: Colors.red,
-            ),
+            child: IconButton(
+              splashRadius: 17,
+              icon: Icon(
+                Icons.more_vert,
+                color: Colors.black,
+              ), 
+              onPressed: _configurations,
+            )
           )
         ],
       ),
       body: SmartRefresher(
+        header: WaterDropHeader(
+          
+          waterDropColor: Color(0xffFFE79B),
+          complete: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle
+              ,color: Color.fromARGB(255, 255, 220, 104)
+            ),
+            child: Icon(Icons.check, color: Colors.white,)),
+        ),
         controller: _refreshController,
         child: _listViewUsuarios(),
         enablePullDown: true,
@@ -46,11 +60,71 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
+_configurations(){
+  showDialog(
+    context: context, 
+    builder: (context){
+      return AlertDialog(
+        
+        actionsPadding: EdgeInsets.all(20),
+        actionsAlignment: MainAxisAlignment.start,
+        elevation: 0,
+        actions: [
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                Container(
+                  margin: EdgeInsets.only(left: 9),
+                  child: Icon(Icons.wifi, color: Color.fromARGB(255, 109, 220, 112),
+                  /*child: Icon(
+                  Icons.wifi_off, color: Colors.red,
+                  ),*/
+                  ),
+                ),
+                Text('internet conection')
+          
+                ],
+              ),
+              SizedBox(height: 15,),
+              Divider(height: 0.5,color: Colors.purpleAccent.withOpacity(0.4),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                IconButton(
+                  hoverColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  splashRadius: 20,
+                  splashColor: Colors.purpleAccent.withOpacity(0.4),
+                  padding: EdgeInsets.only(left: 0),
+                  onPressed: (){},
+                  icon: Icon(
+                    Icons.exit_to_app, color: Color(0xff40128B),
+                  ),
+                ),
+                Text('cerrar sesion')
+                ],
+              )
+            ],
+          )
+        ],
+        title: Center(child: Column(
+          children: [
+            Text('Configurations'),
+            SizedBox(height: 10,),
+            Divider(height: 0.5,color: Color(0xffDD58D6))
+          ],
+        )),
+      );
+    }
+  );
+}
+
   ListView _listViewUsuarios() {
-    return ListView.separated(
+    return ListView.builder(
       physics: BouncingScrollPhysics(),
       itemBuilder: (_,i)=>_userListTile(usuarios[i]), 
-      separatorBuilder: (_,i)=>Divider(), 
       itemCount: usuarios.length
     );
   }
@@ -60,7 +134,7 @@ class _UserScreenState extends State<UserScreen> {
         title: Text(usuario.nombre),
         subtitle: Text(usuario.email),
         leading: CircleAvatar(
-          backgroundColor: Colors.deepPurpleAccent,
+          backgroundColor: Color(0xff9336B4),
           child: Text(usuario.nombre.substring(0,2), style: TextStyle(color: Colors.white),),
         ),
         trailing: Container(
@@ -78,3 +152,4 @@ class _UserScreenState extends State<UserScreen> {
     _refreshController.refreshCompleted();
   }
 }
+

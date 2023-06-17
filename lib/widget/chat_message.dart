@@ -33,9 +33,9 @@ class chatMessage extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8),
         margin: EdgeInsets.only(right: 10, bottom: 5, left: 60),
-        child: Text(this.message),
+        child: Text(this.message, style: TextStyle(color: Colors.white),),
         decoration: BoxDecoration(
-          color: Colors.red,
+          color: Color.fromARGB(255, 194, 109, 224),
           borderRadius: BorderRadius.only(topLeft: Radius.circular(10), bottomLeft: Radius.circular(10), topRight: Radius.circular(5), bottomRight: Radius.circular(10))
         ),
       )
@@ -47,9 +47,9 @@ class chatMessage extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(8),
         margin: EdgeInsets.only(right: 60, bottom: 5, left: 10),
-        child: Text(this.message),
+        child: Text(this.message, style: TextStyle(color: Colors.black87),),
         decoration: BoxDecoration(
-          color: Colors.blue,
+          color: Colors.black12,
           borderRadius: BorderRadius.only(topLeft: Radius.circular(5), bottomLeft: Radius.circular(10), topRight: Radius.circular(10), bottomRight: Radius.circular(10))
         ),
       )

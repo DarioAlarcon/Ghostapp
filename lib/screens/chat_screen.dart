@@ -13,6 +13,33 @@ class _ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 final _textController = TextEditingController();
 final _focusnode = FocusNode();
 
+late AnimationController _animationController;
+late Animation<Offset> _slideAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _animationController = AnimationController(
+      duration: Duration(milliseconds: 200),
+      vsync: this,
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: Offset(1.0, 0.0),
+      end:Offset(0.0, 0.0),
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
 List<chatMessage> _messages = [
     ];
 
@@ -23,7 +50,7 @@ bool _estaEscribiendo = false;
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        leading: Icon(Icons.arrow_back, color: Colors.black87,),
+        leading: Icon(Icons.arrow_back, color: Color(0xff9336B4),),
         toolbarHeight: 65,
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -37,13 +64,9 @@ bool _estaEscribiendo = false;
           Container(
             margin: EdgeInsets.only(right: 10),
             child: CircleAvatar(
+              backgroundColor: Color(0xff9336B4),
               maxRadius: 18,
-              child: Text(
-                'DA',
-                style: TextStyle(
-                  fontSize: 13
-                ),
-              ),
+              child: Icon(Icons.person, color: Colors.white,)
             ),
           )
         ],
@@ -82,47 +105,71 @@ Widget _inputChat(){
         child: Row(
           children: [
             Flexible(
-              child:  TextField(
-                controller: _textController,
-                onSubmitted: _handleSubmit,
-                onChanged: (String texto ) {
-                  setState(() {
-                    if (texto.trim().length>0) {
-                      _estaEscribiendo = true;
-                    }else{
-                      _estaEscribiendo = false;
+              child:  Container(
+                decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                border: Border.all(color: Colors.black26)
+
+                ),
+                height: 37,
+                padding: EdgeInsets.only(left: 8, right: 8),
+                alignment: Alignment.center,
+                child: TextField(
+                  cursorColor: Color(0xffDD58D6),
+                  controller: _textController,
+                  onSubmitted: _handleSubmit,
+                  onChanged: (String texto ) {
+                    setState(() {
+                      if (texto.trim().length>0) {
+                        _estaEscribiendo = true;
+                        _animationController.forward();
+                      }else{
+                        _estaEscribiendo = false;
+                        _animationController.reverse();
+                      }
+                      
+                    });
+                    if(texto.trim().length>0){
+                      _animationController.forward();
                     }
-                  });
-                },
-                focusNode: _focusnode,
-                decoration: InputDecoration.collapsed(hintText: 'Mensaje'),
+                  },
+                  focusNode: _focusnode,
+                  decoration: InputDecoration.collapsed(hintText: 'Mensaje'),
+                ),
               )
             ),
+            
             Container(
               margin: EdgeInsets.symmetric(horizontal: 4),
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.amber,
-                ),
-                margin: EdgeInsets.symmetric(horizontal: 4),
-                child: IconTheme(
-                  data: IconThemeData(
-                    color: Colors.white
+              child: _estaEscribiendo?
+              SlideTransition(
+                position: _slideAnimation,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Color.fromARGB(255, 255, 226, 130),
                   ),
-                  child: IconButton(
-                    hoverColor: Colors.transparent,
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    //color: Colors.white,
-                    icon: Icon(Icons.send),
-                    onPressed: _estaEscribiendo?
-                    ()=> _handleSubmit(_textController.text.trim()):
-                    null
-                    ,
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  child: IconTheme(
+                    data: IconThemeData(
+                      color: Colors.white
+                    ),
+                    child: IconButton(
+                      hoverColor: Colors.transparent,
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      //color: Colors.white,
+                      icon: Icon(Icons.send),
+                      onPressed: _estaEscribiendo?
+                      ()=> _handleSubmit(_textController.text.trim()):
+                      null
+                      ,
+                    ),
                   ),
                 ),
-              ),
+              ):
+              Container(),
             )
           ],
         ),
@@ -136,11 +183,12 @@ _handleSubmit(String texto){
   _textController.clear();
   _focusnode.requestFocus();
 
-  final newMessage = new chatMessage(message: texto, uid: '12d3', animationController: AnimationController(vsync: this, duration: Duration(milliseconds: 300)),);
+  final newMessage = new chatMessage(message: texto, uid: '123', animationController: AnimationController(vsync: this, duration: Duration(milliseconds: 300)),);
   _messages.insert(0, newMessage);
   newMessage.animationController.forward();
   setState(() {
     _estaEscribiendo = false;
+  _animationController.reverse();
   });
 @override
 dispose(){
