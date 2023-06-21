@@ -1,4 +1,5 @@
 import 'package:chat_app/models/usuario.dart';
+import 'package:chat_app/services/auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -98,7 +99,11 @@ _configurations(){
                   splashRadius: 20,
                   splashColor: Colors.purpleAccent.withOpacity(0.4),
                   padding: EdgeInsets.only(left: 0),
-                  onPressed: (){},
+                  onPressed: (){
+                    Navigator.pushReplacementNamed(context, 'log in');
+                    AuthService.deleteToken();
+
+                  },
                   icon: Icon(
                     Icons.exit_to_app, color: Color(0xff40128B),
                   ),

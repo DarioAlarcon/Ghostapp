@@ -1,8 +1,11 @@
+import 'package:chat_app/helpers/mostrar_alerta.dart';
+import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/widget/labels_custom.dart';
 import 'package:chat_app/widget/logo_custom.dart';
 import 'package:chat_app/widget/terminos_custom.dart';
 import 'package:chat_app/widget/yellow_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widget/input_custom.dart';
 
@@ -52,6 +55,8 @@ final passCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    
+    final authService = Provider.of<AuthService>(context, listen: true);
     return Container(
       margin: EdgeInsets.only(top: 30),
       padding: EdgeInsets.symmetric(horizontal: 40),
@@ -72,9 +77,16 @@ final passCtrl = TextEditingController();
          ),
         yellowButton(
           titulo: 'Log in',
-          onPressed: (){
-            print(emailCtrl.text);
-            print(passCtrl.text);
+          onPressed: authService.autenticando? ()=>null : ()async{
+            FocusScope.of(context).unfocus();
+            
+            final loginOK = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
+            if(loginOK){
+              Navigator.pushReplacementNamed(context, 'usuario');
+            }else{
+              mostrarAlaerta(context, 'Login Incorrecto', 'revise sus credenciales nuevamente');
+            }
+
           },
         )
         ],

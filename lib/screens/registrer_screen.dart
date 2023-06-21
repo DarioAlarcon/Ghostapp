@@ -1,8 +1,11 @@
+import 'package:chat_app/helpers/mostrar_alerta.dart';
+import 'package:chat_app/services/auth_services.dart';
 import 'package:chat_app/widget/labels_custom.dart';
 import 'package:chat_app/widget/logo_custom_white.dart';
 import 'package:chat_app/widget/terminos_custom.dart';
 import 'package:chat_app/widget/blue_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widget/input_custom.dart';
 
@@ -62,6 +65,7 @@ final passCtrl = TextEditingController();
 final namectrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    final authService = Provider.of<AuthService>(context);
     return Container(
       
       margin: EdgeInsets.only(top: 30),
@@ -92,10 +96,20 @@ final namectrl = TextEditingController();
          ),
         yellowButton(
           titulo: 'Sing up',
-          onPressed: (){
+          onPressed: authService.autenticando? (){}: ()async{
             print(namectrl.text);
             print(emailCtrl.text);
             print(passCtrl.text);
+            final registroOK = await authService.register(
+              namectrl.text.trim(),
+              emailCtrl.text.trim(),
+              passCtrl.text.trim(),
+            );
+            if (registroOK==true) {
+              Navigator.pushReplacementNamed(context, 'usuario');
+            }else{
+              mostrarAlaerta(context, 'Registro Incorrecto', 'intentalo nuevamente');
+            }
           },
         )
         ],
