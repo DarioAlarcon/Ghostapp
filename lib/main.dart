@@ -1,5 +1,7 @@
 import 'package:chat_app/routes/routes.dart';
 import 'package:chat_app/services/auth_services.dart';
+import 'package:chat_app/services/chat_services.dart';
+import 'package:chat_app/services/socket_services.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,7 +16,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => AuthService())
+        ChangeNotifierProvider(create: (_) => AuthService()),
+        ChangeNotifierProvider(create: (_)=>SocketService()),
+        ChangeNotifierProvider(create: (_)=>chatService())
       ],
       child: MaterialApp(
         theme: ThemeData.light().copyWith(
@@ -22,6 +26,7 @@ class MyApp extends StatelessWidget {
             primary: Color(0xff9336B4)
           )
         ),
+  
          
         debugShowCheckedModeBanner: false,
         title: 'Chat app',

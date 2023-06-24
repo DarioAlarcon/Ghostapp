@@ -90,7 +90,7 @@ autenticando = true;
   }
 
   Future<bool> isLoggedIn()async{
-    final token = await this._storage.read(key: 'token');
+    final token = await this._storage.read(key: 'token')??'';
     var url  = Uri.parse('${ Environment.apiUrl }/login/renew');
     var resp = await http.get(url,
     headers:{

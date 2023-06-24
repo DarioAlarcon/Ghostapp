@@ -5,14 +5,23 @@ import 'package:chat_app/widget/logo_custom_white.dart';
 import 'package:chat_app/widget/terminos_custom.dart';
 import 'package:chat_app/widget/blue_btn.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import '../services/socket_services.dart';
 import '../widget/input_custom.dart';
 
 class RegistreScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Color(0xff9336B4),
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarDividerColor: Colors.transparent
+
+  ));
     return Scaffold(
     
       backgroundColor: Color(0xff9336B4),
@@ -41,7 +50,8 @@ class RegistreScreen extends StatelessWidget {
                     colorContenido: Color(0xffFFE79B),
                     colorPregunta: Colors.white,
                   ),
-                  customTerminos(color: Color(0xfff2f2f2),)
+                  customTerminos(color: Color(0xfff2f2f2),),
+                  SizedBox()
               ],),
           ),
         ),
@@ -65,6 +75,8 @@ final passCtrl = TextEditingController();
 final namectrl = TextEditingController();
   @override
   Widget build(BuildContext context) {
+
+    final socketService = Provider.of<SocketService>(context);
     final authService = Provider.of<AuthService>(context);
     return Container(
       
@@ -106,6 +118,7 @@ final namectrl = TextEditingController();
               passCtrl.text.trim(),
             );
             if (registroOK==true) {
+              socketService.connect();
               Navigator.pushReplacementNamed(context, 'usuario');
             }else{
               mostrarAlaerta(context, 'Registro Incorrecto', 'intentalo nuevamente');

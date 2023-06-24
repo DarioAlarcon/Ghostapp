@@ -1,6 +1,9 @@
-import 'package:chat_app/models/usuario.dart';
 import 'package:chat_app/services/auth_services.dart';
+import 'package:chat_app/services/chat_services.dart';
+import 'package:chat_app/services/socket_services.dart';
+import 'package:chat_app/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class UserScreen extends StatefulWidget {
@@ -10,16 +13,24 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
-  final usuarios = [
-      Usuario(online: true, email: 'test1@dmail.com', nombre: 'Jason', uid: '1'),
-      Usuario(online: true, email: 'test2@dmail.com', nombre: 'Alexandra', uid: '2'),
-      Usuario(online: false, email: 'test3@dmail.com', nombre: 'Ace', uid: '3'),
-  ];
+  var usuarios = [];
+  
+
 
   RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final UsuarioService = new usuarioService();
+  @override
+  void initState() {
+    this._cargarUsuario();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
+    final authService = Provider.of<AuthService>(context);
+    final usuario = authService.usuario;
+    final socketService = Provider.of<SocketService>(context);
     return  Scaffold(
       appBar: AppBar(
         toolbarHeight: 70,
@@ -65,6 +76,7 @@ _configurations(){
   showDialog(
     context: context, 
     builder: (context){
+      final socketService = Provider.of<SocketService>(context);
       return AlertDialog(
         
         actionsPadding: EdgeInsets.all(20),
@@ -78,13 +90,17 @@ _configurations(){
                 children: [
                 Container(
                   margin: EdgeInsets.only(left: 9),
-                  child: Icon(Icons.wifi, color: Color.fromARGB(255, 109, 220, 112),
-                  /*child: Icon(
-                  Icons.wifi_off, color: Colors.red,
-                  ),*/
-                  ),
-                ),
-                Text('internet conection')
+                  child: (socketService.ServerStatus==serverStatus.Online)?
+                  Icon(Icons.wifi, color: Color.fromARGB(255, 109, 220, 112))
+                  : Icon(Icons.wifi_off, color: Colors.red,),
+                  )
+                  ,
+                
+                Container(
+                  child: (socketService.ServerStatus==serverStatus.Online)?
+                  Text('you are connected'):
+                  Text('you are disconnected')
+                )
           
                 ],
               ),
@@ -100,6 +116,7 @@ _configurations(){
                   splashColor: Colors.purpleAccent.withOpacity(0.4),
                   padding: EdgeInsets.only(left: 0),
                   onPressed: (){
+                    socketService.disconnect();
                     Navigator.pushReplacementNamed(context, 'log in');
                     AuthService.deleteToken();
 
@@ -150,10 +167,16 @@ _configurations(){
             color: usuario.online? Colors.green: Colors.red
           ),
         ),
+        onTap: (){
+          final ChatService = Provider.of<chatService>(context, listen: false);
+          ChatService.usuarioPara = usuario;
+          Navigator.pushReplacementNamed(context, 'chat');
+        },
       );
   }
   _cargarUsuario() async{
-      await Future.delayed(Duration(milliseconds: 1000));
+    this.usuarios = await UsuarioService.getUsuarios();
+    setState(() {});
     _refreshController.refreshCompleted();
   }
 }

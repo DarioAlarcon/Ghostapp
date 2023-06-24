@@ -7,15 +7,17 @@ class customTerminos extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 20),
-      child: Text(
-        'Términos y condiciones de uso', 
-        style: TextStyle(
-          color: this.color,
-          fontWeight: FontWeight.w300
+    return SafeArea(
+      child: Container(
+        margin: EdgeInsets.only(bottom: 20),
+        child: Text(
+          'Términos y condiciones de uso', 
+          style: TextStyle(
+            color: this.color,
+            fontWeight: FontWeight.w300
+          )
         )
-      )
+      ),
     );
   }
 }

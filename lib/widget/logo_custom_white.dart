@@ -15,6 +15,6 @@ class customLogoWhite extends StatelessWidget {
         ]
         ),
       ),
-    );;
+    );
   }
 }
